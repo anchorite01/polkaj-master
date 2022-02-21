@@ -1,0 +1,30 @@
+apply from: '../common_java_app.gradle'
+
+dependencies {
+}
+
+test {
+    systemProperty "java.library.path", file("${buildDir}/rust/release").absolutePath
+}
+
+task compileRust(type:Exec) {
+    workingDir 'src/rust'
+    commandLine 'cargo', 'build', '--release', '--target-dir=../../build/rust'
+}
+
+compileJava.dependsOn(compileRust)
+
+jar {
+    from("${buildDir}/rust/release") {
+        into "native/macos"
+        include '*.dylib'
+    }
+    from("${buildDir}/rust/release") {
+        into "native/linux"
+        include '*.so'
+    }
+    from("${buildDir}/rust/release") {
+        into "native/windows"
+        include '*.dll'
+    }
+}

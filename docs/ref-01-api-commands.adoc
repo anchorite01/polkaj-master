@@ -1,0 +1,406 @@
+= Standard RPC Commands and Subscriptions
+
+- <<calls>>
+- <<subsriptions>>
+
+[#calls]
+== RPC Commands
+:shortcut-base: StandardCommands.getInstance()
+
+* Author
+- <<author_submitExtrinsic>>
+- <<author_pendingExtrinsics>>
+- <<author_removeExtrinsic>>
+- <<author_hasKey>>
+- <<author_hasSessionKeys>>
+- <<author_insertKey>>
+- <<author_rotateKeys>>
+* Chain
+- <<getBlock>>
+- <<chainGetBlockHash>>
+- <<getFinalizedHead>>
+- <<getHead>>
+- <<getRuntimeVersion>>
+* Contracts
+- <<contractsCall>>
+- <<contractsGetStorage>>
+- <<contractsRentProjection>>
+* State
+- <<stateMetadata>>
+- <<stateGetStorage>>
+- <<stateGetReadProof>>
+* System
+- <<systemChain>>
+- <<systemHealth>>
+- <<systemName>>
+- <<systemNodeRoles>>
+- <<systemPeers>>
+- <<systemVersion>>
+* Other
+- <<methods>>
+- <<paymentQueryInfo>>
+- <<accountNextIndex>>
+
+[#author_submitExtrinsic]
+=== Submit Extrinsic (`author_submitExtrinsic`)
+
+Submit a fully formatted extrinsic for block inclusion
+
+Shortcut:: `{shortcut-base}.authorSubmitExtrinsic(ByteData)`
+Command:: `author_submitExtrinsic`
+Parameters:: encoded extrinsic
+Java Object:: `Hash256`
+
+[#author_pendingExtrinsics]
+=== List Pending Extrinsics (`author_pendingExtrinsics`)
+
+Returns all pending extrinsics
+
+Shortcut:: `{shortcut-base}.authorPendingExtrinsics()`
+Command:: `author_pendingExtrinsics`
+Parameters:: none
+Java Object:: `List<ByteData>`
+
+[#author_removeExtrinsic]
+=== Remove Extrinsic (`author_removeExtrinsic`)
+
+Remove given extrinsic(s) from the pool and temporarily ban it to prevent reimporting
+
+Shortcut:: `{shortcut-base}.authorRemoveExtrinsic()`
+Command:: `author_removeExtrinsic`
+Parameters:: extrinsic(s) hash(es) or original extrinsic(s)
+Java Object:: `List<Hash256>`
+
+[#author_hasKey]
+=== Has Key (`author_hasKey`)
+
+Returns true if the keystore has private keys for the given public key and key type.
+
+Shortcut:: `{shortcut-base}.authorHasKey()`
+Command:: `author_hasKey`
+Parameters:: address/public key, key type
+Java Object:: `Boolean`
+
+[#author_hasSessionKeys]
+=== Has Session Keys (`author_hasSessionKeys`)
+
+Returns true if the keystore has private keys for the given session public keys.
+
+Shortcut:: `{shortcut-base}.authorHasSessionKeys()`
+Command:: `author_hasSessionKeys`
+Parameters:: bytes
+Java Object:: `Boolean`
+
+[#author_insertKey]
+=== Insert Key (`author_insertKey`)
+
+Insert a key into the keystore.
+
+Shortcut:: `{shortcut-base}.authorInsertKey()`
+Command:: `author_insertKey`
+Parameters:: key type, suri, address/public key
+Java Object:: `ByteData`
+
+[#author_rotateKeys]
+=== Rotate Keys (`author_rotateKeys`)
+
+Generate new session keys and returns the corresponding public keys.
+
+Shortcut:: `{shortcut-base}.authorRotateKeys()`
+Command:: `author_rotateKeys`
+Parameters:: none
+Java Object:: `ByteData`
+
+[#getBlock]
+=== Get Block (`chain_getBlock`)
+
+Get block by its hash
+
+Shortcut:: `{shortcut-base}.getBlock(Hash256)`
+Command:: `chain_getBlock`
+Parameters:: hash of the requested block
+Java Object:: `BlockResponseJson`
+
+[#chainGetBlockHash]
+=== Get Block Hash (`chain_getBlockHash`)
+
+Get the block hash for a specific block
+
+Shortcut:: `{shortcut-base}.getBlockHash(at)`
+Command:: `chain_getBlockHash`
+Parameters:: `at` - (optional) block height
+Java Object:: `Hash256`
+
+.BlockResponseJson Properties
+- `BlockJson getBlock()` block details
+- `Object getJustification()`
+
+[#getFinalizedHead]
+=== Get Finalised Head (`chain_getFinalizedHead`)
+
+Get the hash of the finalized head
+
+Shortcut:: `{shortcut-base}.getFinalizedHead()`
+Command:: `chain_getFinalizedHead`
+Parameters:: none
+Java Object:: `Hash256`
+
+[#getHead]
+=== Get Head (`chain_getHead`)
+
+Get the hash of the head
+
+Shortcut:: `{shortcut-base}.getHead()`
+Command:: `chain_getHead`
+Parameters:: none
+Java Object:: `Hash256`
+
+[#getRuntimeVersion]
+=== Get Runtime Version (`chain_getRuntimeVersion`)
+
+Get the Runtime Version of the current blockchain
+
+Shortcut:: `{shortcut-base}.getRuntimeVersion()`
+Command:: `chain_getRuntimeVersion`
+Parameters:: none
+Java Object:: `RuntimeVersionJson`
+
+.RuntimeVersionJson Properties
+- `List<List<?>> getApis()`
+- `Integer getAuthoringVersion()`
+- `String getImplName()`
+- `Integer getImplVersion()`
+- `String getSpecName()`
+- `Integer getSpecVersion()`
+- `Integer getTransactionVersion()`
+
+[#contractsCall]
+=== Contracts Call (`contracts_call`)
+
+Executes a call to a contract
+
+Shortcut:: `{shortcut-base}.contractsCall(call, at)`
+Command:: `contracts_call`
+Parameters:: `call` - requests data `ContractCallRequestJson`, `at` - (optional) block reference (`Hash256`)
+Java Object:: `ContractExecResultJson`
+
+[#contractsGetStorage]
+=== Contracts Get Storage (`contracts_getStorage`)
+
+Get value under a specified storage key in a contract.
+
+Shortcut:: `{shortcut-base}.contractsGetStorage(address, key, at)`
+Command:: `contracts_getStorage`
+Parameters::
+  - `address` - contract address (`Address`),
+  - `key` - key (`Has256`),
+  - `at` - (optional) block reference (`Hash256`)
+Java Object:: `ByteData`
+
+[#contractsRentProjection]
+=== Contracts Rent Projection (`contracts_rentProjection`)
+
+Get projected time a given contract will be able to sustain paying its rent
+
+Shortcut:: `{shortcut-base}.contractsRentProjection(address, at)`
+Command:: `contracts_getStorage`
+Parameters::
+  - `address` - contract address (`Address`),
+  - `at` - (optional) block reference (`Hash256`)
+Java Object:: `Long`
+
+
+[#stateMetadata]
+=== State Runtime Metadata (`state_getMetadata`)
+
+Get name of the current blockchain
+
+Shortcut:: `{shortcut-base}.stateMetadata()`
+Command:: `state_getMetadata`
+Parameters:: none
+Java Object:: `ByteData`
+
+The metadata is encoded with SCALE codec, if you need to decode the object use:
+[source, java]
+----
+Future<Metadata> metadataFuture = client.execute(StandardCommands.getInstance().stateMetadata())
+        .thenApply(ByteData::getBytes)
+        .thenApply(ScaleExtract.fromBytes(new MetadataReader()));
+----
+
+[#stateGetStorage]
+=== State Get Storage (`state_getStorage`)
+
+Get state from a Storage.
+
+Shortcut:: `{shortcut-base}.stateGetStorage(key)`
+Command:: `state_getStorage`
+Parameters:: `key` - bytes (`byte[]` or `ByteDate`)
+Java Object:: `ByteData`
+
+[#stateGetReadProof]
+=== State Get Read Proof (`state_getReadProof`)
+
+Get proof of storage entries at a specific block state
+
+Shortcut:: `{shortcut-base}.stateGetReadProof(keys, at?)`
+Command:: `state_getReadProof`
+Parameters::
+  - `keys` - list of keys (`List<ByteDate>`)
+  - `at` - (optional) block reference (`Hash256`)
+Java Object:: `ReadProofJson`
+
+[#systemChain]
+=== System Chain (`system_chain`)
+
+Get name of the current blockchain
+
+Shortcut:: `{shortcut-base}.systemChain()`
+Command:: `system_chain`
+Parameters:: none
+Java Object:: `String`
+
+[#systemHealth]
+=== System Health (`system_health`)
+
+Get health status of the node
+
+Shortcut:: `{shortcut-base}.systemHealth()`
+Command:: `system_health`
+Parameters:: none
+Java Object:: `SystemHealthJson`
+
+.SystemHealthJson Properties
+- `Boolean getSyncing` - true if node does initial syncing
+- `Integer getPeers()` - amount of current peers
+- `Boolean getShouldHavePeers()` - true if node should have peers
+
+[#systemName]
+=== System Name (`system_name`)
+
+Get name of the current node
+
+Shortcut:: `{shortcut-base}.systemName()`
+Command:: `system_name`
+Parameters:: none
+Java Object:: `String`
+
+[#systemNodeRoles]
+=== System Node Roles (`system_nodeRoles`)
+
+Get roles of the current node
+
+Shortcut:: `{shortcut-base}.systemNodeRoles()`
+Command:: `system_nodeRoles`
+Parameters:: none
+Java Object:: `List<String>`
+
+[#systemPeers]
+=== System Peers (`system_peers`)
+
+Get peer list connected to the current node
+
+Shortcut:: `{shortcut-base}.systemPeers()`
+Command:: `system_peers`
+Parameters:: none
+Java Object:: `List<PeerJson>`
+
+.PeerJson Properties
+- `Hash256 getBestHash()`
+- `Long getBestNumber()`
+- `String getPeerId()`
+- `Integer getProtocolVersion()`
+- `String getRoles()`
+
+[#systemVersion]
+=== System Version (`system_version`)
+
+Get version of the current node
+
+Shortcut:: `{shortcut-base}.systemVersion()`
+Command:: `system_version`
+Parameters:: none
+Java Object:: `String`
+
+[#methods]
+=== Methods List (`rpc_methods`)
+
+Get list of all available RPC methods
+
+Shortcut:: `{shortcut-base}.methods()`
+Command:: `rpc_methods`
+Parameters:: none
+Java Object:: `MethodsJson`
+
+.MethodsJson Properties
+- `Integer getVersion()` - version of RPC
+- `List<String> getMethods()` - list of methods
+
+[#paymentQueryInfo]
+=== Payment Query (`payment_queryInfo`)
+
+Retrieves the fee information for an encoded extrinsic
+
+Shortcut:: `{shortcut-base}.paymentQueryInfo()`
+Command:: `payment_queryInfo`
+Parameters:: extrinsic, (optional) block hash
+Java Object:: `RuntimeDispatchInfoJson`
+
+[#accountNextIndex]
+=== Account Next Index (`account_nextIndex`)
+
+Next index for the address
+
+Shortcut:: `{shortcut-base}.accountNextIndex()`
+Command:: `account_nextIndex`
+Parameters:: address
+Java Object:: `Integer`
+
+[#subsriptions]
+== Subscriptions
+:shortcut-base: StandardSubscriptions.getInstance()
+
+- <<subFinalizedHeads>>
+- <<subNewHeads>>
+- <<subRuntimeVersion>>
+- <<subStorage>>
+
+[#subFinalizedHeads]
+=== Finalized Heads (`chain_subscribeFinalizedHeads`)
+
+Subscribe to the finalized head changes, i.e. to the finalized block on the head of the current blockchain.
+
+Shortcut:: `{shortcut-base}.finalizedHeads()`
+Command:: `chain_subscribeFinalizedHeads`
+Parameters:: none
+Java Object:: `BlockJson.Header`
+
+[#subNewHeads]
+=== New Heads (`chain_subscribeNewHead`)
+
+Subscribe to the head changes, i.e. to block on the head of the current blockchain.
+
+Shortcut:: `{shortcut-base}.newHeads()`
+Command:: `chain_subscribeNewHead`
+Parameters:: none
+Java Object:: `BlockJson.Header`
+
+[#subRuntimeVersion]
+=== Runtime Version (`state_subscribeRuntimeVersion`)
+
+Subscribe to the changes to the Runtime Version.
+
+Shortcut:: `{shortcut-base}.runtimeVersion()`
+Command:: `state_subscribeRuntimeVersion`
+Parameters:: none
+Java Object:: `RuntimeVersion`
+
+[#subStorage]
+=== Storage (`state_subscribeStorage`)
+
+Subscribe to the changes to the Storage.
+
+Shortcut:: `{shortcut-base}.storage(keys?)`
+Command:: `state_subscribeRuntimeVersion`
+Parameters:: `keys` - (optional) Storage Keys (`Hash256`)
+Java Object:: `StorageChangeSetJson`

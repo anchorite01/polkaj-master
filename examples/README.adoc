@@ -1,0 +1,87 @@
+= Examples for Polkadot Java Client
+
+Code examples used in the link:../docs/[Documentation]
+
+== Encoding
+
+Examples for SCALE add SS58
+
+.Run
+----
+cd encoding
+./gradlew run
+----
+
+== Types
+
+Examples for DotAmount, formatting, hashes and Address
+
+.Run
+----
+cd types
+./gradlew run
+----
+
+== RPC
+
+Examples for accessing JSON RPC through HTTP or WebSockets.
+The examples expect Polkadot node running and listening for RPC and WS requests on the localhost (i.e. default node options)
+
+.Show current head
+----
+cd rpc
+./gradlew run
+----
+
+.Follow updates to the current head (use `Ctrl+C` to exit)
+----
+cd rpc
+./gradlew run -PmainClass=FollowState
+----
+
+.Describe runtime
+----
+cd rpc
+./gradlew run -PmainClass=DescribeRuntime
+----
+
+== Runtime Explorer
+
+A web-based explorer of the Runtime Metadata.
+The examples expect Polkadot node running and listening for RPC requests on the localhost (i.e. default node options)
+
+----
+cd runtime-explorer
+./gradlew bootRun
+----
+
+Open http://localhost:8080
+
+== Keys
+
+Generate Secret/Public Keys and Address
+
+----
+cd keys
+./gradlew run
+----
+
+== Balance check and transfer
+
+Check account status and/or make a transfer of the balance to another address.
+
+.For the development network, transfer random amount for Alice to Bob
+----
+cd balance
+./gradlew run
+----
+
+NOTE: To run a development network use: `polkadot --dev`
+
+.Transfer using real network (ex. Kusama)
+----
+cd balance
+./gradlew run --args="wss://cc3-5.kusama.network SENDER_KEY_SEED RECIPIENT_ADDRESS"
+----
+
+WARNING: If you use on a real network please be aware that it executes the transfer without any additional confirmation from you

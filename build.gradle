@@ -1,0 +1,65 @@
+buildscript {
+
+    dependencies {
+        classpath 'com.netflix.nebula:gradle-aggregate-javadocs-plugin:3.0.1'
+    }
+}
+
+plugins {
+    id "com.jfrog.bintray" version "1.8.4"
+}
+
+// gradle aggregateJavadoc
+apply plugin: 'nebula-aggregate-javadocs'
+apply plugin: 'jacoco'
+
+allprojects {
+    group = 'io.emeraldpay.polkaj'
+    version = "0.5.0-SNAPSHOT"
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven { url 'https://oss.jfrog.org/artifactory/repo' }
+        //for java-multibase
+        maven { url 'https://jitpack.io' }
+    }
+
+}
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+task coverageReport(type: JacocoReport) {
+    executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/test.exec')
+    reports {
+        html.enabled true
+        xml.enabled true
+        csv.enabled false
+    }
+}
+
+task syncJars(type: Sync) {
+    allprojects { p ->
+        from p.tasks.withType(Jar)
+    }
+    into "${buildDir}/libs/"
+}
+
+// Skip Bintray for the root module
+bintray {
+    dryRun=true
+    publish=false
+    override=true
+    publications = []
+    configurations = []
+    pkg {
+        repo = 'none'
+        name = 'none'
+        version {
+            name = 'none'
+        }
+    }
+}

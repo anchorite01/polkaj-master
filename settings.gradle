@@ -1,0 +1,14 @@
+rootProject.name = 'polkaj-root'
+
+include "polkaj-ss58",
+        "polkaj-scale",
+        "polkaj-json-types",
+        "polkaj-scale-types",
+        "polkaj-schnorrkel",
+        "polkaj-common-types",
+        "polkaj-api-base",
+        "polkaj-api-http",
+        "polkaj-api-ws",
+        "polkaj-tx",
+        "polkaj-adapter-tests"
+

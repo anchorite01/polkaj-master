@@ -1,0 +1,18 @@
+= PolkaJ (Polkadot Java Client) Documentation
+
+== Table of Content
+
+. link:01-common-types.adoc[Common Types]
+. link:02-encoding.adoc[Encoding and Decoding (SCALE, SS58)]
+. link:03-rpc-client.adoc[RPC Client]
+. link:04-cryptography.adoc[Cryptography and Keys]
+. link:05-extrinsics.adoc[Extrinsics and Storage]
+. link:06-balance.adoc[Working with Account Balance]
+
+== Reference
+
+. link:ref-01-api-commands.adoc[Standard RPC Commands and Subscriptions]
+
+== Examples
+
+See code used in the documentation in the link:../examples[Examples]

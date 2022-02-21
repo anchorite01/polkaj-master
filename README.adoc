@@ -1,0 +1,90 @@
+= PolkaJ - Polkadot Java Client
+:lib-version: 0.3.0
+:lib-version-dev: 0.5.0-SNAPSHOT
+
+image:https://github.com/emeraldpay/polkaj/workflows/Tests/badge.svg["Unit Tests"]
+image:https://codecov.io/gh/emeraldpay/polkaj/branch/master/graph/badge.svg["Coverage",link="https://codecov.io/gh/emeraldpay/polkaj"]
+image:https://img.shields.io/github/license/emeraldpay/polkaj.svg?style=flat-square&maxAge=2592000["License",link="https://github.com/emeraldpay/polkaj/blob/master/LICENSE"]
+image:https://badges.gitter.im/emeraldpay/community.svg["Gitter",link="https://gitter.im/emeraldpay/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge"]
+
+Java client library to use and access API of Polkadot based networks.
+
+WARNING: UNDER DEVELOPMENT
+
+- Latest Stable Version: {lib-version}
+- Latest Snapshot Version: {lib-version-dev}
+
+
+== Modules
+
+- `io.emeraldpay.polkaj:polkaj-scale:{lib-version}` - SCALE codec implementation
+- `io.emeraldpay.polkaj:polkaj-scale-types:{lib-version}` - SCALE mapping for standard Polkadot types
+- `io.emeraldpay.polkaj:polkaj-schnorrkel:{lib-version}` - Schnorrkel for Java
+- `io.emeraldpay.polkaj:polkaj-ss58:{lib-version}` - SS58 codec to encode/decode addresses and pubkeys
+- `io.emeraldpay.polkaj:polkaj-common-types:{lib-version}` - common types (Address, DotAmount, Hash256, etc)
+- `io.emeraldpay.polkaj:polkaj-json-types:{lib-version}` - JSON RPC mapping to Java classes
+- `io.emeraldpay.polkaj:polkaj-api-base:{lib-version}` - RPC base classes
+- `io.emeraldpay.polkaj:polkaj-api-http:{lib-version}` - JSON RPC HTTP client
+- `io.emeraldpay.polkaj:polkaj-api-ws:{lib-version}` - JSON RPC WebSocket client
+- `io.emeraldpay.polkaj:polkaj-tx:{lib-version}` - Storage access and Extrinsics
+
+== Usage
+
+To use development SNAPSHOT versions you need to install the library into the local Maven repository.
+
+.Install into local Maven
+----
+gradle install
+----
+
+.Using with Gradle
+[source,groovy,subs="attributes"]
+----
+repositories {
+   // polkaj public repo
+   maven { url  "https://dl.bintray.com/emerald/polkaj" }
+   // required for com.github.multiformats:java-multibase library
+   maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'io.emeraldpay.polkaj:polkaj-api-http:{lib-version}'
+}
+----
+
+== Documentation
+
+See link:docs/[Documentation] in `./docs` directory, and a demonstration in `./examples`.
+
+== Example
+
+.Show current finalized block
+[source,java]
+----
+PolkadotHttpApi client = PolkadotApi.newBuilder()
+    .rpcCallAdapter(JavaHttpAdapter.newBuilder().build())
+    .build();
+Future<Hash256> hashFuture = client.execute(
+        PolkadotApi.commands().getFinalizedHead()
+);
+
+Hash256 hash = hashFuture.get();
+System.out.println("Current head: " + hash);
+
+Future<BlockResponseJson> blockFuture = client.execute(
+        PolkadotApi.commands().getBlock(hash)
+);
+
+BlockResponseJson block = blockFuture.get();
+System.out.println("Current height: " + block.getBlock().getHeader().getNumber());
+System.out.println("State hash: " + block.getBlock().getHeader().getStateRoot());
+
+
+client.close();
+----
+
+== License
+
+The core project code is released under Apache 2.0 license.
+
+Examples and docs are published under CC0 license + additionally Apache 2.0 for code parts in the examples.
